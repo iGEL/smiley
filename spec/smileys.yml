@@ -1,0 +1,10 @@
+grin:
+  tokens: ':-D :D'
+razz:
+  tokens: ':-p :p :-P :P'
+rolleyes:
+  tokens: ':rolleyes:'
+smile:
+  tokens: ":-) :)"
+wink:
+  tokens: ";-) ;)"
