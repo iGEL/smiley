@@ -2,6 +2,27 @@ require 'spec_helper'
 require 'smiley'
 
 describe Smiley do
+  describe '.all_class' do
+    before do
+      Smiley.smiley_file = File.join(File.dirname(__FILE__), "smileys.yml")
+    end
+
+    after do
+      Smiley.class_eval do
+        remove_class_variable :@@all_class if class_variable_defined?(:@@all_class)
+      end
+    end
+
+    it "should default to smiley" do
+      Smiley.new.parse(":-)").should == %(<em class="smiley smiley-smile"></em>)
+    end
+
+    it "should use the css_class setting" do
+      Smiley.all_class = "funnyIcon"
+      Smiley.new.parse(":-)").should == %(<em class="funnyIcon smiley-smile"></em>)
+    end
+  end
+
   describe '.smiley_file' do
     before do
       Smiley.class_eval do

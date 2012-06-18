@@ -1,6 +1,10 @@
 require 'yaml'
 
 class Smiley
+  def self.all_class=(klass)
+    @@all_class = klass
+  end
+
   def self.smiley_file=(file)
     @@smiley_file = file
   end
@@ -15,7 +19,7 @@ class Smiley
     load_smileys
 
     text.to_str.gsub(@@regex) do # to_str converts a ActiveSupport::SafeBuffer to a string
-      %(#{$1}<em class="smiley smiley-#{@@smileys[$2].downcase}"></em>#{$3})
+      %(#{$1}<em class="#{defined?(@@all_class) ? @@all_class : "smiley"} smiley-#{@@smileys[$2].downcase}"></em>#{$3})
     end
   end
 
