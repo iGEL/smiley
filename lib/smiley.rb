@@ -14,7 +14,7 @@ class Smiley
   def parse(text)
     load_smileys
 
-    text.gsub(@@regex) do
+    text.to_str.gsub(@@regex) do # to_str converts a ActiveSupport::SafeBuffer to a string
       %(#{$1}<em class="smiley smiley-#{@@smileys[$2].downcase}"></em>#{$3})
     end
   end
@@ -31,7 +31,7 @@ class Smiley
         end
       end
       before_and_after = "[.,;:!\\?\\(\\[\\{\\)\\]\\}\\-]|\\s"
-      @@regex = Regexp.compile "(^|#{before_and_after})(" + @@regex.join("|") + ")(#{before_and_after}|$)"
+      @@regex = Regexp.compile("(^|#{before_and_after})(" + @@regex.join("|") + ")($|#{before_and_after})", Regexp::MULTILINE)
     end
   end
 end

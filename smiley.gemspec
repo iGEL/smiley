@@ -7,11 +7,9 @@ Gem::Specification.new do |s|
   s.date = Time.now.strftime("%Y-%m-%d")
   s.email = %q{igel@igels.net}
   s.extra_rdoc_files = [
-    "README.textile"
   ]
   s.files = [
     "MIT-LICENSE",
-    "README.textile",
     "Rakefile",
     "Gemfile",
     "Gemfile.lock",
