@@ -17,9 +17,30 @@ describe Smiley do
       Smiley.new.parse(":-)").should == %(<em class="smiley smiley-smile"></em>)
     end
 
-    it "should use the css_class setting" do
+    it "should use the all_class setting" do
       Smiley.all_class = "funnyIcon"
       Smiley.new.parse(":-)").should == %(<em class="funnyIcon smiley-smile"></em>)
+    end
+  end
+
+  describe '.each_class_prefix' do
+    before do
+      Smiley.smiley_file = File.join(File.dirname(__FILE__), "smileys.yml")
+    end
+
+    after do
+      Smiley.class_eval do
+        remove_class_variable :@@each_class_prefix if class_variable_defined?(:@@each_class_prefix)
+      end
+    end
+
+    it "should default to smiley" do
+      Smiley.new.parse(":-)").should == %(<em class="smiley smiley-smile"></em>)
+    end
+
+    it "should use the each_class_prefix setting" do
+      Smiley.each_class_prefix = "funnyIcon"
+      Smiley.new.parse(":-)").should == %(<em class="smiley funnyIcon-smile"></em>)
     end
   end
 

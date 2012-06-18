@@ -5,6 +5,10 @@ class Smiley
     @@all_class = klass
   end
 
+  def self.each_class_prefix=(klass)
+    @@each_class_prefix = klass
+  end
+
   def self.smiley_file=(file)
     @@smiley_file = file
   end
@@ -19,7 +23,7 @@ class Smiley
     load_smileys
 
     text.to_str.gsub(@@regex) do # to_str converts a ActiveSupport::SafeBuffer to a string
-      %(#{$1}<em class="#{defined?(@@all_class) ? @@all_class : "smiley"} smiley-#{@@smileys[$2].downcase}"></em>#{$3})
+      %(#{$1}<em class="#{defined?(@@all_class) ? @@all_class : "smiley"} #{defined?(@@each_class_prefix) ? @@each_class_prefix : "smiley"}-#{@@smileys[$2].downcase}"></em>#{$3})
     end
   end
 
