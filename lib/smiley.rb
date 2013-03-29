@@ -43,10 +43,8 @@ class Smiley
   end
 
   def parse(text)
-    load_smileys
-
-    text = h(text).gsub(@@regex) do # to_str converts a ActiveSupport::SafeBuffer to a string
-      %(#{$1}<em class="#{css_class(@@smileys[$2])}"></em>#{$3})
+    text = h(text).gsub(self.class.regex) do
+      %(#{$1}<em class="#{css_class(self.class.smileys[$2])}"></em>#{$3})
     end
 
     text.respond_to?(:html_safe) ? text.html_safe : text
@@ -81,18 +79,24 @@ class Smiley
     str.gsub('-', '_')
   end
 
-  def load_smileys
-    unless defined?(@@smileys) && defined?(@@regex)
-      @@smileys = {}
-      @@regex = []
-      YAML.load(File.read(Smiley.smiley_file)).each do |smiley, options|
-        options['tokens'].split(/\s+/).each do |token|
-          @@smileys[token] = smiley
-          @@regex << Regexp.escape(token)
-        end
+  def self.smileys
+    return @@smileys if  defined?(@@smileys)
+
+    @@smileys = {}
+    YAML.load(File.read(Smiley.smiley_file)).each do |smiley, options|
+      options['tokens'].split(/\s+/).each do |token|
+        @@smileys[token] = smiley
       end
-      before_and_after = "[.,;:!\\?\\(\\[\\{\\)\\]\\}\\-]|\\s"
-      @@regex = Regexp.compile("(^|#{before_and_after})(" + @@regex.join("|") + ")($|#{before_and_after})", Regexp::MULTILINE)
     end
+    @@smileys
+  end
+
+  def self.regex
+    return @@regex if defined?(@@regex)
+
+    before_and_after = "[.,;:!\\?\\(\\[\\{\\)\\]\\}\\-]|\\s"
+    @@regex = Regexp.compile("(^|#{before_and_after})(" +
+            smileys.keys.map { |token| Regexp.escape(token) }.join("|") +
+            ")($|#{before_and_after})", Regexp::MULTILINE)
   end
 end
