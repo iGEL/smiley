@@ -1,4 +1,83 @@
-smiley
+
+[![Code Climate](https://codeclimate.com/github/iGEL/smiley.png)](https://codeclimate.com/github/iGEL/smiley) 
+[![Build Status](https://travis-ci.org/iGEL/smiley.png?branch=master)](https://travis-ci.org/iGEL/smiley) 
+(Tested: Ruby 2.0.0, 1.9.3, 1.9.2, 1.8.7, Rubinius, Jruby)
+
+Smiley
 ======
 
-A small lib to parse smileys. Use CSS to display them!
+This is a small library to pass text emoticons like into cute grafics your users will like. To be more accurate, this 
+lib will parse them into `<em class="smiley smiley-grin></em>`, which you can style with css to show the smiley 
+grafic. This way, you can use [CSS sprites](http://css-tricks.com/css-sprites/) to make them load faster.
+
+Usage
+=====
+
+First, configure the smileys you want to have converted in a yml file. If you use this lib with Ruby on Rails, the 
+default position for this file is in `config/smileys.yml`.
+
+```yml
+cool:
+  tokens: ':cool: 8-) 8)'
+cry:
+  tokens: ":&#x27;( ;( :&#x27;-(" # HTML escaped, since we work in the escaped form
+grin:
+  tokens: ':-D :D'
+```
+
+You can configure multiple forms for the same smiley. In this example, `:cool:`, `8-)` and `8)` will all produce
+the same smiley.
+
+Next, pass your string through `smiley`. I strongly recommend you escape all HTML before passing it. With Rails 3
+or higher, you have to mark the string afterwards as HTML safe, otherwise the HTML will be escaped.
+
+Helper:
+```ruby
+def smileys(str)
+  raw Smiley.new.parse(h(str))
+end
+```
+Haml:
+```haml
+.post
+  = smileys("Wow, they're alive :cool: :D")
+```
+
+The last step is to setup the CSS, so the images will be displayed.
+
+SCSS:
+```scss
+.smiley { // All smileys have this class
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background: image-url('smileys/sprite.png');
+}
+.smiley-cool {
+  background: image-url('smileys/cool.gif'); // animated
+}
+.smiley-cry {
+  background-position: 0 0;
+}
+.smiley-grin {
+  width: 20px;
+  background-position: 0 -15px;
+}
+```
+
+Configuration
+=============
+
+So far, `smiley` has these configuration options:
+
+```ruby
+# The prefix for the CSS class, e.g. smiley in smiley-grin, defaults to smiley
+Smiley.each_class_prefix = 'icons'
+
+# The CSS class that is added to all smileys, defaults to smiley
+Smiley.all_class = 'emoji'
+
+# YAML file with the smiley definition. Default in Rails is config/smileys.yml
+# No default if not used with Rails
+Smiley.smiley_file = 'data/smileys.yml'
+```
