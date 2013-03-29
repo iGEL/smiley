@@ -25,6 +25,6 @@ Gem::Specification.new do |s|
     "spec/smiley_spec.rb",
     "spec/spec_helper.rb"
   ]
-  s.add_development_dependency('rake', '~> 0.9')
-  s.add_development_dependency('rspec', '~> 2.10.0')
+  s.add_development_dependency('rake', '~> 10.0')
+  s.add_development_dependency('rspec', '~> 2.13.0')
 end
