@@ -76,6 +76,10 @@ Smiley.each_class_prefix = 'icons'
 # The CSS class that is added to all smileys, defaults to smiley
 Smiley.all_class = 'emoji'
 
+# defaults to :dashed, meaning class names like smiley-big-grin
+# :camel-case will generate class names like smileyBigGrin, :snake_case like smiley_big_grin
+Smiley.css_class_style = :camel_case
+
 # YAML file with the smiley definition. Default in Rails is config/smileys.yml
 # No default if not used with Rails
 Smiley.smiley_file = 'data/smileys.yml'

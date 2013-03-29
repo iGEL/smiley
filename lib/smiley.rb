@@ -1,6 +1,8 @@
 require 'yaml'
 
 class Smiley
+  VALID_CSS_CLASS_STYLES = [:dashed, :snake_case, :camel_case]
+
   def self.all_class
     defined?(@@all_class) ? @@all_class : 'smiley'
   end
@@ -21,6 +23,17 @@ class Smiley
     @@smiley_file = file
   end
 
+  def self.css_class_style
+    defined?(@@css_class_style) ? @@css_class_style : :dashed
+  end
+
+  def self.css_class_style=(style)
+    unless VALID_CSS_CLASS_STYLES.include?(style.to_sym)
+      raise "Invalid css class style #{style}. You can choose between :dashed, :snake_case and :camel_case"
+    end
+    @@css_class_style = style.to_sym
+  end
+
   def self.smiley_file
     if defined?(@@smiley_file)
       return @@smiley_file
@@ -33,7 +46,7 @@ class Smiley
     load_smileys
 
     text = h(text).gsub(@@regex) do # to_str converts a ActiveSupport::SafeBuffer to a string
-      %(#{$1}<em class="#{self.class.all_class} #{self.class.each_class_prefix}-#{@@smileys[$2].downcase}"></em>#{$3})
+      %(#{$1}<em class="#{css_class(@@smileys[$2])}"></em>#{$3})
     end
 
     text.respond_to?(:html_safe) ? text.html_safe : text
@@ -46,6 +59,26 @@ class Smiley
     else
       str.to_str
     end
+  end
+
+  def css_class(smiley)
+    out = "#{self.class.all_class} #{self.class.each_class_prefix}-#{smiley}"
+    case self.class.css_class_style
+    when :camel_case
+      camelize(out)
+    when :snake_case
+      underscore(out)
+    else
+      out
+    end
+  end
+
+  def camelize(str)
+    str.gsub(/-([a-z])/) { $1.upcase }
+  end
+
+  def underscore(str)
+    str.gsub('-', '_')
   end
 
   def load_smileys
