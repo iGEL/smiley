@@ -32,12 +32,22 @@ class Smiley
   def parse(text)
     load_smileys
 
-    text.to_str.gsub(@@regex) do # to_str converts a ActiveSupport::SafeBuffer to a string
+    text = h(text).gsub(@@regex) do # to_str converts a ActiveSupport::SafeBuffer to a string
       %(#{$1}<em class="#{self.class.all_class} #{self.class.each_class_prefix}-#{@@smileys[$2].downcase}"></em>#{$3})
     end
+
+    text.respond_to?(:html_safe) ? text.html_safe : text
   end
 
   private
+  def h(str)
+    if defined?(ERB::Utils) && ERB::Utils.respond_to?(:html_escape)
+      ERB::Utils.html_escape(str).to_str
+    else
+      str.to_str
+    end
+  end
+
   def load_smileys
     unless defined?(@@smileys) && defined?(@@regex)
       @@smileys = {}

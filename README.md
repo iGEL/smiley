@@ -6,9 +6,9 @@
 Smiley
 ======
 
-This is a small library to pass text emoticons like into cute grafics your users will like. To be more accurate, this 
-lib will parse them into `<em class="smiley smiley-grin></em>`, which you can style with css to show the smiley 
-grafic. This way, you can use [CSS sprites](http://css-tricks.com/css-sprites/) to make them load faster.
+This is a small library to pass text emoticons like into cute smiley images your users will like. To be more accurate,
+this lib will parse them into `<em class="smiley smiley-grin></em>`, which you can style with css to show the smiley
+image. This way, you can use [CSS sprites](http://css-tricks.com/css-sprites/) to make them load faster.
 
 Usage
 =====
@@ -28,13 +28,12 @@ grin:
 You can configure multiple forms for the same smiley. In this example, `:cool:`, `8-)` and `8)` will all produce
 the same smiley.
 
-Next, pass your string through `smiley`. I strongly recommend you escape all HTML before passing it. With Rails 3
-or higher, you have to mark the string afterwards as HTML safe, otherwise the HTML will be escaped.
+Next, pass your string through `smiley`.
 
 Helper:
 ```ruby
 def smileys(str)
-  raw Smiley.new.parse(h(str))
+  Smiley.new.parse(str)
 end
 ```
 Haml:
