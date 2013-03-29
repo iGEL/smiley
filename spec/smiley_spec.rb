@@ -13,34 +13,32 @@ describe Smiley do
       end
     end
 
-    it "should default to smiley" do
-      Smiley.new.parse(":-)").should == %(<em class="smiley smiley-smile"></em>)
+    it 'defaults to smiley' do
+      expect(Smiley.all_class).to eq('smiley')
     end
 
-    it "should use the all_class setting" do
-      Smiley.all_class = "funnyIcon"
-      Smiley.new.parse(":-)").should == %(<em class="funnyIcon smiley-smile"></em>)
+    it 'returns the configured value' do
+      Smiley.all_class = 'funnyIcon'
+
+      expect(Smiley.all_class).to eq('funnyIcon')
     end
   end
 
   describe '.each_class_prefix' do
-    before do
-      Smiley.smiley_file = File.join(File.dirname(__FILE__), "smileys.yml")
-    end
-
     after do
       Smiley.class_eval do
         remove_class_variable :@@each_class_prefix if class_variable_defined?(:@@each_class_prefix)
       end
     end
 
-    it "should default to smiley" do
-      Smiley.new.parse(":-)").should == %(<em class="smiley smiley-smile"></em>)
+    it 'defaults to smiley' do
+      expect(Smiley.each_class_prefix).to eq('smiley')
     end
 
-    it "should use the each_class_prefix setting" do
-      Smiley.each_class_prefix = "funnyIcon"
-      Smiley.new.parse(":-)").should == %(<em class="smiley funnyIcon-smile"></em>)
+    it 'returns the configured value' do
+      Smiley.each_class_prefix = 'funnyIcon'
+
+      expect(Smiley.each_class_prefix).to eq('funnyIcon')
     end
   end
 
@@ -55,55 +53,55 @@ describe Smiley do
       Object.send(:remove_const, :Rails) if defined?(Rails)
     end
 
-    it "should return the value configured" do
-      Smiley.smiley_file = "/etc/smileys.yml"
+    it 'returns the configured value' do
+      Smiley.smiley_file = '/etc/smileys.yml'
 
-      Smiley.smiley_file.should == "/etc/smileys.yml"
+      expect(Smiley.smiley_file).to eq('/etc/smileys.yml')
     end
 
-    it "should return nil, if not configured" do
-      Smiley.smiley_file.should be_nil
+    it 'returns nil, if not configured' do
+      expect(Smiley.smiley_file).to be_nil
     end
 
-    it "should return \#{Rails.root}/config/smileys.yml, if Rails.root is defined" do
-      Rails = double("Rails")
-      Rails.stub(:root) { "/home/igel/dev/example.com/" }
+    it 'return \#{Rails.root}/config/smileys.yml, if Rails.root is defined"' do
+      Rails = double('Rails')
+      Rails.stub(:root) { '/home/igel/dev/example.com/' }
 
-      Smiley.smiley_file.should == "/home/igel/dev/example.com/config/smileys.yml"
+      expect(Smiley.smiley_file).to eq('/home/igel/dev/example.com/config/smileys.yml')
     end
   end
 
   describe '#parse' do
     before do
-      Smiley.smiley_file = File.join(File.dirname(__FILE__), "smileys.yml")
+      Smiley.smiley_file = File.join(File.dirname(__FILE__), 'smileys.yml')
     end
 
-    it "should parse a smiley" do
-      Smiley.new.parse('That is so funny! :-) Will tell my grandma about that!').should == 'That is so funny! <em class="smiley smiley-smile"></em> Will tell my grandma about that!'
+    it 'parses a smiley' do
+      expect(Smiley.new.parse('That is so funny! :-) Will tell my grandma about that!')).to eq('That is so funny! <em class="smiley smiley-smile"></em> Will tell my grandma about that!')
     end
 
-    it "should work with alternative forms" do
-      Smiley.new.parse("That's so funny! :P Will tell my grandma about that :rolleyes: ").should == %(That's so funny! <em class="smiley smiley-razz"></em> Will tell my grandma about that <em class="smiley smiley-rolleyes"></em> )
+    it 'works with alternative forms' do
+      expect(Smiley.new.parse("That's so funny! :P Will tell my grandma about that :rolleyes: ")).to eq(%(That's so funny! <em class="smiley smiley-razz"></em> Will tell my grandma about that <em class="smiley smiley-rolleyes"></em> ))
     end
 
-    it "should parse smileys at the beginning and end of a string" do
-      Smiley.new.parse(":D So funny! ;-)").should == %(<em class="smiley smiley-grin"></em> So funny! <em class="smiley smiley-wink"></em>)
+    it 'parses smileys at the beginning and end of a string' do
+      expect(Smiley.new.parse(':D So funny! ;-)')).to eq(%(<em class="smiley smiley-grin"></em> So funny! <em class="smiley smiley-wink"></em>))
     end
 
-    it "should parse smileys at the beginning and end of a line" do
-      Smiley.new.parse("\n:D So funny! ;-)\n").should == %(\n<em class="smiley smiley-grin"></em> So funny! <em class="smiley smiley-wink"></em>\n)
+    it 'parses smileys at the beginning and end of a line' do
+      expect(Smiley.new.parse("\n:D So funny! ;-)\n")).to eq(%(\n<em class="smiley smiley-grin"></em> So funny! <em class="smiley smiley-wink"></em>\n))
     end
 
-    it "should parse smileys after and before a comma, a dot, a question or exclamation mark, a semicolon, a colon, or a dash" do
-      Smiley.new.parse("before: ,;-) .:-) ?:-) !;-) ;:D ::rolleyes: -:P\nafter: ;-), :-). :-)? ;-)! :D; :rolleyes:: :P-").should == %(before: ,<em class="smiley smiley-wink"></em> .<em class="smiley smiley-smile"></em> ?<em class="smiley smiley-smile"></em> !<em class="smiley smiley-wink"></em> ;<em class="smiley smiley-grin"></em> :<em class="smiley smiley-rolleyes"></em> -<em class="smiley smiley-razz"></em>\nafter: <em class="smiley smiley-wink"></em>, <em class="smiley smiley-smile"></em>. <em class="smiley smiley-smile"></em>? <em class="smiley smiley-wink"></em>! <em class="smiley smiley-grin"></em>; <em class="smiley smiley-rolleyes"></em>: <em class="smiley smiley-razz"></em>-)
+    it 'parses smileys after and before a comma, a dot, a question or exclamation mark, a semicolon, a colon, or a dash' do
+      expect(Smiley.new.parse("before: ,;-) .:-) ?:-) !;-) ;:D ::rolleyes: -:P\nafter: ;-), :-). :-)? ;-)! :D; :rolleyes:: :P-")).to eq(%(before: ,<em class="smiley smiley-wink"></em> .<em class="smiley smiley-smile"></em> ?<em class="smiley smiley-smile"></em> !<em class="smiley smiley-wink"></em> ;<em class="smiley smiley-grin"></em> :<em class="smiley smiley-rolleyes"></em> -<em class="smiley smiley-razz"></em>\nafter: <em class="smiley smiley-wink"></em>, <em class="smiley smiley-smile"></em>. <em class="smiley smiley-smile"></em>? <em class="smiley smiley-wink"></em>! <em class="smiley smiley-grin"></em>; <em class="smiley smiley-rolleyes"></em>: <em class="smiley smiley-razz"></em>-))
     end
 
-    it "should parse smileys after and before round, box or curly brackets" do
-      Smiley.new.parse(%! (:-)) [:-)] {:-)} !).should == %! (<em class="smiley smiley-smile"></em>) [<em class="smiley smiley-smile"></em>] {<em class="smiley smiley-smile"></em>} !
+    it 'parses smileys after and before round, box or curly brackets' do
+      expect(Smiley.new.parse(' (:-)) [:-)] {:-)} ')).to eq(' (<em class="smiley smiley-smile"></em>) [<em class="smiley smiley-smile"></em>] {<em class="smiley smiley-smile"></em>} ')
     end
 
-    it "should not parse smileys directly before or after a word" do
-      Smiley.new.parse(" :-)word:-) ").should == " :-)word:-) "
+    it "doesn't parse smileys directly before or after a word" do
+      expect(Smiley.new.parse(' :-)word:-) ')).to eq(' :-)word:-) ')
     end
   end
 end

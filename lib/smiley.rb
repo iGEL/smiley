@@ -1,8 +1,16 @@
 require 'yaml'
 
 class Smiley
+  def self.all_class
+    defined?(@@all_class) ? @@all_class : 'smiley'
+  end
+
   def self.all_class=(klass)
     @@all_class = klass
+  end
+
+  def self.each_class_prefix
+    defined?(@@each_class_prefix) ? @@each_class_prefix : 'smiley'
   end
 
   def self.each_class_prefix=(klass)
@@ -14,16 +22,18 @@ class Smiley
   end
 
   def self.smiley_file
-    return @@smiley_file if defined?(@@smiley_file)
-    return File.join(Rails.root, "config", "smileys.yml") if defined?(Rails) && Rails.respond_to?(:root)
-    nil
+    if defined?(@@smiley_file)
+      return @@smiley_file
+    elsif defined?(Rails) && Rails.respond_to?(:root)
+      return File.join(Rails.root, 'config', 'smileys.yml')
+    end
   end
 
   def parse(text)
     load_smileys
 
     text.to_str.gsub(@@regex) do # to_str converts a ActiveSupport::SafeBuffer to a string
-      %(#{$1}<em class="#{defined?(@@all_class) ? @@all_class : "smiley"} #{defined?(@@each_class_prefix) ? @@each_class_prefix : "smiley"}-#{@@smileys[$2].downcase}"></em>#{$3})
+      %(#{$1}<em class="#{self.class.all_class} #{self.class.each_class_prefix}-#{@@smileys[$2].downcase}"></em>#{$3})
     end
   end
 
@@ -33,7 +43,7 @@ class Smiley
       @@smileys = {}
       @@regex = []
       YAML.load(File.read(Smiley.smiley_file)).each do |smiley, options|
-        options["tokens"].split(/\s+/).each do |token|
+        options['tokens'].split(/\s+/).each do |token|
           @@smileys[token] = smiley
           @@regex << Regexp.escape(token)
         end
