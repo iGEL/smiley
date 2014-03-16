@@ -44,7 +44,7 @@ class Smiley
 
   def parse(text)
     text = h(text).gsub(self.class.regex) do
-      %(#{$1}<em class="#{css_class(self.class.smileys[$2])}"></em>#{$3})
+      %(<em class="#{css_class(self.class.smileys[$1])}"></em>)
     end
 
     text.respond_to?(:html_safe) ? text.html_safe : text
@@ -95,8 +95,11 @@ class Smiley
     return @@regex if defined?(@@regex)
 
     before_and_after = "[.,;:!\\?\\(\\[\\{\\)\\]\\}\\-]|\\s"
-    @@regex = Regexp.compile("(^|#{before_and_after})(" +
-            smileys.keys.map { |token| Regexp.escape(token) }.join("|") +
-            ")($|#{before_and_after})", Regexp::MULTILINE)
+    @@regex = Regexp.compile(
+      "(?<=^|#{before_and_after})" +
+      "(" + smileys.keys.map { |token| Regexp.escape(token) }.join("|") + ")" +
+      "(?=$|#{before_and_after})",
+      Regexp::MULTILINE
+    )
   end
 end

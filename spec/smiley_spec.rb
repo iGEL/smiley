@@ -96,6 +96,10 @@ describe Smiley do
       expect(smiley.parse("That's so funny! :P Will tell my grandma about that :rolleyes: ")).to eq(%(That's so funny! <em class="smiley smiley-razz"></em> Will tell my grandma about that <em class="smiley smiley-rolleyes"></em> ))
     end
 
+    it 'works with smileys directly one after the other' do
+      expect(smiley.parse("That's so funny! :-) ;-)")).to eq(%(That's so funny! <em class="smiley smiley-smile"></em> <em class="smiley smiley-wink"></em>))
+    end
+
     it 'parses smileys at the beginning and end of a string' do
       expect(smiley.parse(':D So funny! ;-)')).to eq(%(<em class="smiley smiley-grin"></em> So funny! <em class="smiley smiley-wink"></em>))
     end
