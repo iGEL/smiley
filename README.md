@@ -1,6 +1,6 @@
 [![Code Climate](https://codeclimate.com/github/iGEL/smiley.png)](https://codeclimate.com/github/iGEL/smiley)
 [![Build Status](https://travis-ci.org/iGEL/smiley.png?branch=master)](https://travis-ci.org/iGEL/smiley)
-(Tested: Ruby 2.1.1, 2.0.0, 1.9.3, 1.9.2, 1.8.7, Rubinius, Jruby)
+(Tested: Ruby 2.1.1, 2.0.0, 1.9.3, 1.9.2, Rubinius, Jruby)
 
 Smiley
 ======
