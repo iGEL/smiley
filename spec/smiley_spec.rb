@@ -4,7 +4,6 @@ require 'smiley'
 describe Smiley do
   subject(:smiley) { described_class.new }
 
-
   after do
     described_class.class_eval do
       remove_class_variable :@@all_class if class_variable_defined?(:@@all_class)
@@ -56,7 +55,7 @@ describe Smiley do
     it 'return \#{Rails.root}/config/smileys.yml, if Rails.root is defined"' do
       rails = double('Rails')
       stub_const('Rails', rails)
-      rails.stub(:root) { '/home/igel/dev/example.com/' }
+      allow(rails).to receive(:root).and_return('/home/igel/dev/example.com/')
 
       expect(described_class.smiley_file).to eq('/home/igel/dev/example.com/config/smileys.yml')
     end
@@ -144,13 +143,13 @@ describe Smiley do
       erb_utils = double('ERB::Utils')
       stub_const('ERB::Utils', erb_utils)
 
-      erb_utils.should_receive(:html_escape).with('<script>alert("Hacked!")</script>').and_return('&lt;script&gt;alert(&quot;Hacked!&quot;)&lt;/script&gt;')
-      
+      expect(erb_utils).to receive(:html_escape).with('<script>alert("Hacked!")</script>').and_return('&lt;script&gt;alert(&quot;Hacked!&quot;)&lt;/script&gt;')
+
       smiley.parse('<script>alert("Hacked!")</script>')
     end
 
     it 'marks the String as HTML safe, if that method is available' do
-      String.any_instance.should_receive(:html_safe)
+      expect_any_instance_of(String).to receive(:html_safe)
 
       smiley.parse(':-)')
     end
