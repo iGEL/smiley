@@ -3,6 +3,7 @@ Gem::Specification.new do |s|
   s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_ruby_version = '>= 1.9.3'
   s.authors = ["Johannes Barre"]
   s.date = Time.now.strftime("%Y-%m-%d")
   s.email = %q{igel@igels.net}
