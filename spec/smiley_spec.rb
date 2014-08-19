@@ -52,7 +52,7 @@ describe Smiley do
       expect(described_class.smiley_file).to be_nil
     end
 
-    it 'return \#{Rails.root}/config/smileys.yml, if Rails.root is defined"' do
+    it 'return {Rails.root}/config/smileys.yml, if Rails.root is defined' do
       rails = double('Rails')
       stub_const('Rails', rails)
       allow(rails).to receive(:root).and_return('/home/igel/dev/example.com/')

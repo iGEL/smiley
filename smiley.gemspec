@@ -27,5 +27,5 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb"
   ]
   s.add_development_dependency('rake', '~> 10.0')
-  s.add_development_dependency('rspec', '~> 2.13')
+  s.add_development_dependency('rspec', '~> 3.0')
 end
