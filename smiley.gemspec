@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
     "MIT-LICENSE",
     "Rakefile",
     "Gemfile",
-    "Gemfile.lock",
     "lib/smiley.rb",
     "spec/smiley_spec.rb",
     "spec/spec_helper.rb"
